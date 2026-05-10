@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tape.hpp"
+#include "tape_sorter/tape.hpp"
 #include <chrono>
 #include <cmath>
 #include <cstddef>
@@ -32,12 +32,11 @@ namespace tape_sorter::utility {
       return;
     }
 
-    // Strategy 1: shift_backward() or shift_forward() abs(tape.pos() - index) times
-    // Strategy 2: rewind_backward() + index times shift_forward()
-    // Strategy 3: rewind_forward() + size - 1 - index times shift_backward()
-
+        // Strategy 1: shift_backward() or shift_forward() abs(tape.pos() - index) times
     const size_t cost1 = (tape.pos() > index) ? tape.pos() - index : index - tape.pos(); // to avoid underflow
+    // Strategy 2: rewind_backward() + index times shift_forward()
     const size_t cost2 = index;
+    // Strategy 3: rewind_forward() + size - 1 - index times shift_backward()
     const size_t cost3 = tape.size() - 1 - index;
 
     if (cost1 >= cost2 && cost1 >= cost3) {

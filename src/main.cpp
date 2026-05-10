@@ -1,7 +1,7 @@
-#include "bubble_sort.hpp"
-#include "file_tape.hpp"
-#include "sorting_algorithm.hpp"
-#include "utility.hpp"
+#include "tape_sorter/bubble_sort.hpp"
+#include "tape_sorter/file_tape.hpp"
+#include "tape_sorter/sorting_algorithm.hpp"
+#include "tape_sorter/utility.hpp"
 #include <argparse/argparse.hpp>
 #include <filesystem>
 #include <iostream>

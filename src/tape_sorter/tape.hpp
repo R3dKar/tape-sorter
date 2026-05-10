@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+
 namespace tape_sorter {
   template <typename T>
   class ITape {

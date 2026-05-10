@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tape.hpp"
+#include "tape_sorter/tape.hpp"
 
 namespace tape_sorter {
   template <typename T>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "sorting_algorithm.hpp"
-#include "utility.hpp"
+#include "tape_sorter/sorting_algorithm.hpp"
+#include "tape_sorter/utility.hpp"
 #include <cstddef>
 
 namespace tape_sorter {
