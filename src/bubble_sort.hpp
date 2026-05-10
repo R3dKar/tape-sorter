@@ -8,14 +8,12 @@ namespace tape_sorter {
   template <typename T>
   class BubbleSortAlgorithm : public ISortingAlgorithm<T> {
   public:
-    BubbleSortAlgorithm() = default;
-
     void sort(const ITape<T>& input, ITape<T>& output) const override {
       input.rewind_backward();
       output.rewind_backward();
 
       for (size_t i = 0; i < input.size(); i++) {
-        output.write(intput.read());
+        output.write(input.read());
         input.shift_forward();
         output.shift_forward();
       }

@@ -1,10 +1,12 @@
 #pragma once
 
 #include "tape.hpp"
+#include <chrono>
 #include <cmath>
 #include <cstddef>
 #include <filesystem>
 #include <fstream>
+#include <string>
 
 namespace tape_sorter::utility {
   template <typename T>
@@ -34,7 +36,7 @@ namespace tape_sorter::utility {
     // Strategy 2: rewind_backward() + index times shift_forward()
     // Strategy 3: rewind_forward() + size - 1 - index times shift_backward()
 
-    const size_t cost1 = std::abs(static_cast<ptrdiff_t>(tape.pos()) - index);
+    const size_t cost1 = (tape.pos() > index) ? tape.pos() - index : index - tape.pos(); // to avoid underflow
     const size_t cost2 = index;
     const size_t cost3 = tape.size() - 1 - index;
 
@@ -60,4 +62,6 @@ namespace tape_sorter::utility {
       }
     }
   }
+
+  std::chrono::nanoseconds parse_duration(const std::string& str);
 } // namespace tape_sorter::utility

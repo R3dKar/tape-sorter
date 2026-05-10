@@ -1,0 +1,5 @@
+[latencies]
+shift = '0.1us'
+rewind = '0.15ms'
+write = '10us'
+read = '10us'
