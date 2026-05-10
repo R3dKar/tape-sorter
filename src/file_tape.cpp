@@ -1,36 +1,21 @@
 #include "file_tape.hpp"
+#include "utility.hpp"
 #include <cctype>
-#include <cstdio>
 #include <fstream>
 #include <thread>
 
-namespace {
-  size_t count_items(const char* filename) {
-    std::ifstream file(filename);
-
-    uint32_t item;
-    size_t count = 0;
-
-    while (file >> item) {
-      count++;
-    }
-
-    return count;
-  }
-} // namespace
-
 namespace tape_sorter {
-  FileTape::FileTape(const char* filename, const Config& config)
-      : m_size(::count_items(filename)), m_config(config), m_pos(0), m_file_normalized(false),
-        m_file(filename, std::ios::in | std::ios::out | std::ios::binary), m_file_path(filename) {
+  FileTape::FileTape(const std::filesystem::path& filename, const Config& config)
+      : m_size(utility::count_file_items<uint32_t>(filename)), m_config(config), m_pos(0), m_file_normalized(false),
+        m_file(filename, std::ios::in | std::ios::out | std::ios::binary), m_filename(filename) {
     char symbol;
     m_file >> symbol;
     m_file.seekg(-1, std::ios::cur);
   }
 
-  FileTape::FileTape(size_t n, const char* filename, const Config& config)
+  FileTape::FileTape(size_t n, const std::filesystem::path& filename, const Config& config)
       : m_size(n), m_config(config), m_pos(0), m_file_normalized(true),
-        m_file(filename, std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary), m_file_path(filename) {
+        m_file(filename, std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary), m_filename(filename) {
     for (size_t i = 0; i < m_size; i++) {
       m_file << std::format("{:<{}}\n", 0, NUMBER_WIDTH);
     }
@@ -46,8 +31,8 @@ namespace tape_sorter {
     return m_pos;
   }
 
-  void FileTape::shift_forward() {
-    if (this->pos() + 1 >= this->size()) return;
+  void FileTape::shift_forward() const {
+    if (pos() + 1 >= size()) return;
 
     if (m_file_normalized) {
       m_file.seekg(LINE_WIDTH, std::ios::cur);
@@ -65,21 +50,21 @@ namespace tape_sorter {
     m_pos++;
   }
 
-  void FileTape::shift_backward() {
-    if (this->pos() == 0) return;
+  void FileTape::shift_backward() const {
+    if (pos() == 0) return;
 
     if (m_file_normalized) {
-      m_file.seekg(-LINE_WIDTH, std::ios::cur);
+      m_file.seekg(-static_cast<std::streamoff>(LINE_WIDTH), std::ios::cur);
     } else {
       m_file.seekg(-1, std::ios::cur);
       char symbol = m_file.peek();
 
-      while (!std::isdigit(symbol)) {
+      while (std::isspace(symbol)) {
         m_file.seekg(-1, std::ios::cur);
         symbol = m_file.peek();
       }
 
-      while (std::isdigit(symbol)) {
+      while (!std::isspace(symbol)) {
         m_file.seekg(-1, std::ios::cur);
         symbol = m_file.peek();
       }
@@ -91,22 +76,22 @@ namespace tape_sorter {
     m_pos--;
   }
 
-  void FileTape::rewind_forward() {
-    if (this->pos() + 1 >= this->size()) return;
+  void FileTape::rewind_forward() const {
+    if (pos() + 1 >= size()) return;
 
     if (m_file_normalized) {
-      m_file.seekg((this->size() - 1) * LINE_WIDTH, std::ios::beg);
+      m_file.seekg((size() - 1) * LINE_WIDTH, std::ios::beg);
     } else {
       m_file.seekg(0, std::ios::end);
 
       char symbol = m_file.peek();
 
-      while (!std::isdigit(symbol)) {
+      while (std::isspace(symbol)) {
         m_file.seekg(-1, std::ios::cur);
         symbol = m_file.peek();
       }
 
-      while (std::isdigit(symbol)) {
+      while (!std::isspace(symbol)) {
         m_file.seekg(-1, std::ios::cur);
         symbol = m_file.peek();
       }
@@ -118,8 +103,8 @@ namespace tape_sorter {
     m_pos = m_size - 1;
   }
 
-  void FileTape::rewind_backward() {
-    if (this->pos() == 0) return;
+  void FileTape::rewind_backward() const {
+    if (pos() == 0) return;
 
     if (m_file_normalized) {
       m_file.seekg(0, std::ios::beg);
@@ -151,7 +136,7 @@ namespace tape_sorter {
     std::this_thread::sleep_for(m_config.write_latency);
   }
 
-  uint32_t FileTape::read() {
+  uint32_t FileTape::read() const {
     const auto pos = m_file.tellg();
 
     uint32_t result;
@@ -179,7 +164,7 @@ namespace tape_sorter {
       temp_file << std::format("{:<{}}\n", item, NUMBER_WIDTH);
     }
 
-    fs::resize_file(m_file_path, 0);
+    fs::resize_file(m_filename, 0);
     m_file.clear();
     m_file.seekp(0, std::ios::beg);
 

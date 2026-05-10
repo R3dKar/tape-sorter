@@ -17,20 +17,20 @@ namespace tape_sorter {
       std::chrono::nanoseconds write_latency{};
     };
 
-    FileTape(const char* filename, const Config& config = Config{});
-    FileTape(size_t n, const char* filename, const Config& config = Config{});
+    FileTape(const std::filesystem::path& filename, const Config& config = Config{});
+    FileTape(size_t n, const std::filesystem::path& filename, const Config& config = Config{});
 
     size_t size() const override;
     size_t pos() const override;
 
-    void shift_forward() override;
-    void shift_backward() override;
+    void shift_forward() const override;
+    void shift_backward() const override;
 
-    void rewind_forward() override;
-    void rewind_backward() override;
+    void rewind_forward() const override;
+    void rewind_backward() const override;
 
     void write(const uint32_t& value) override;
-    uint32_t read() override;
+    uint32_t read() const override;
 
   private:
     static constexpr size_t NUMBER_WIDTH = std::numeric_limits<uint32_t>::digits10 + 1;
@@ -38,11 +38,13 @@ namespace tape_sorter {
 
     void normalize_file();
 
-    const size_t m_size;
     Config m_config;
-    size_t m_pos;
+
+    const size_t m_size;
+    mutable size_t m_pos;
+
     bool m_file_normalized;
-    std::fstream m_file;
-    std::filesystem::path m_file_path;
+    const std::filesystem::path m_filename;
+    mutable std::fstream m_file;
   };
 } // namespace tape_sorter
