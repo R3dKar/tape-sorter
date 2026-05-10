@@ -32,7 +32,7 @@ namespace tape_sorter::utility {
       return;
     }
 
-        // Strategy 1: shift_backward() or shift_forward() abs(tape.pos() - index) times
+    // Strategy 1: shift_backward() or shift_forward() abs(tape.pos() - index) times
     const size_t cost1 = (tape.pos() > index) ? tape.pos() - index : index - tape.pos(); // to avoid underflow
     // Strategy 2: rewind_backward() + index times shift_forward()
     const size_t cost2 = index;
