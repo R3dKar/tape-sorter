@@ -1,6 +1,6 @@
 Language: Cpp
 ColumnLimit: 150
-IndentWidth: 4
+IndentWidth: 2
 UseTab: Never
 PointerAlignment: Left
 BreakBeforeBraces: Attach
