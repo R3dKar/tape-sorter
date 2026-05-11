@@ -50,7 +50,9 @@ protected:
   void TearDown() override {
     file_tape.reset();
 
-    if (fs::exists(temp_copy_path)) fs::remove(temp_copy_path);
+    if (fs::exists(temp_copy_path)) {
+      fs::remove(temp_copy_path);
+    }
   }
 };
 

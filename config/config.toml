@@ -1,3 +1,5 @@
+max_ram_elements = 100
+
 [latencies]
 shift = '0.1us'
 rewind = '0.15ms'

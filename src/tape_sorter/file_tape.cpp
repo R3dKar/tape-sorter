@@ -69,7 +69,9 @@ namespace tape_sorter {
         symbol = m_file.peek();
       }
 
-      if (m_file.tellg() > 0) m_file.seekg(1, std::ios::cur);
+      if (m_file.tellg() > 0) {
+        m_file.seekg(1, std::ios::cur);
+      }
     }
 
     std::this_thread::sleep_for(m_config.shift_latency);
@@ -122,8 +124,13 @@ namespace tape_sorter {
   }
 
   void FileTape::write(const uint32_t& value) {
-    if (size() == 0) throw std::logic_error("Cannot write to tape with 0 size");
-    if (!m_file_normalized) normalize_file();
+    if (size() == 0) {
+      throw std::logic_error("Cannot write to tape with 0 size");
+    }
+
+    if (!m_file_normalized) {
+      normalize_file();
+    }
 
     const auto pos = m_file.tellg();
 
@@ -138,7 +145,9 @@ namespace tape_sorter {
   }
 
   uint32_t FileTape::read() const {
-    if (size() == 0) throw std::logic_error("Cannot read from tape with 0 size");
+    if (size() == 0) {
+      throw std::logic_error("Cannot read from tape with 0 size");
+    }
 
     const auto pos = m_file.tellg();
 
