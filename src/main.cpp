@@ -1,6 +1,6 @@
-#include "tape_sorter/bubble_sort.hpp"
 #include "tape_sorter/file_tape.hpp"
 #include "tape_sorter/sorting_algorithm.hpp"
+#include "tape_sorter/tim_sort.hpp"
 #include "tape_sorter/utility.hpp"
 #include <argparse/argparse.hpp>
 #include <filesystem>
@@ -8,11 +8,11 @@
 #include <memory>
 #include <toml++/toml.hpp>
 
-int main(int argc, char** argv) {
-  namespace fs = std::filesystem;
-  namespace chrono = std::chrono;
-  using namespace tape_sorter;
+namespace fs = std::filesystem;
+namespace chrono = std::chrono;
+using namespace tape_sorter;
 
+int main(int argc, char** argv) {
   argparse::ArgumentParser program(argv[0], TAPE_SORTER_VERSION);
 
   fs::path config_path = "config.toml";
@@ -65,24 +65,41 @@ int main(int argc, char** argv) {
     return 1;
   }
 
+  // Config
   const auto toml_config = toml::parse_file(config_path.string());
   FileTape::Config tape_config{};
+  TimSortAlgorithm::Config sort_config{};
 
+  // Latencies validation
   try {
     const auto latencies_config = toml_config["latencies"];
     tape_config.shift_latency = utility::parse_duration(latencies_config["shift"].value_or(""));
     tape_config.rewind_latency = utility::parse_duration(latencies_config["rewind"].value_or(""));
     tape_config.read_latency = utility::parse_duration(latencies_config["read"].value_or(""));
     tape_config.write_latency = utility::parse_duration(latencies_config["write"].value_or(""));
-  } catch (const std::runtime_error& err) {
+  } catch (const std::invalid_argument& err) {
     std::cerr << err.what() << '\n';
     return 1;
   }
 
+  // Max ram elements validation
+  if (!toml_config["max_ram_elements"]) {
+    std::cerr << "Field \"max_ram_elements\" is missing\n";
+    return 1;
+  }
+
+  sort_config.max_ram_elements = toml_config["max_ram_elements"].value_or(0);
+
+  if (sort_config.max_ram_elements == 0) {
+    std::cerr << "Max ram elements must be at least 1\n";
+    return 1;
+  }
+
+  // Core logic
   FileTape input_tape(input_path, tape_config);
   FileTape output_tape(input_tape.size(), output_path, tape_config);
 
-  std::unique_ptr<ISortingAlgorithm<uint32_t>> sorter = std::make_unique<BubbleSortAlgorithm<uint32_t>>();
+  std::unique_ptr<ISortingAlgorithm<uint32_t>> sorter = std::make_unique<TimSortAlgorithm>(sort_config);
 
   sorter->sort(input_tape, output_tape);
 

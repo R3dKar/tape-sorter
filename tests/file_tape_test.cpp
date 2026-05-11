@@ -79,7 +79,7 @@ TEST_P(FileTapeTest, RewindForwardAtStart) {
 
   file_tape->rewind_forward();
 
-  EXPECT_EQ(file_tape->pos(), file_tape->size() - 1);
+  EXPECT_EQ(file_tape->pos(), std::max<size_t>(file_tape->size(), 1) - 1);
 }
 
 TEST_P(FileTapeTest, RewindForwardAtEnd) {
@@ -87,7 +87,7 @@ TEST_P(FileTapeTest, RewindForwardAtEnd) {
 
   file_tape->rewind_forward();
 
-  EXPECT_EQ(file_tape->pos(), file_tape->size() - 1);
+  EXPECT_EQ(file_tape->pos(), std::max<size_t>(file_tape->size(), 1) - 1);
 }
 
 TEST_P(FileTapeTest, ShiftForwardAtStart) {
@@ -95,7 +95,7 @@ TEST_P(FileTapeTest, ShiftForwardAtStart) {
 
   file_tape->shift_forward();
 
-  EXPECT_EQ(file_tape->pos(), 1);
+  EXPECT_EQ(file_tape->pos(), (file_tape->size() >= 2) ? 1 : 0);
 }
 
 TEST_P(FileTapeTest, ShiftForwardAtEnd) {
@@ -103,7 +103,7 @@ TEST_P(FileTapeTest, ShiftForwardAtEnd) {
 
   file_tape->shift_forward();
 
-  EXPECT_EQ(file_tape->pos(), file_tape->size() - 1);
+  EXPECT_EQ(file_tape->pos(), std::max<size_t>(file_tape->size(), 1) - 1);
 }
 
 TEST_P(FileTapeTest, ShiftBackwardAtStart) {
@@ -119,7 +119,7 @@ TEST_P(FileTapeTest, ShiftBackwardAtEnd) {
 
   file_tape->shift_backward();
 
-  EXPECT_EQ(file_tape->pos(), file_tape->size() - 2);
+  EXPECT_EQ(file_tape->pos(), std::max<size_t>(file_tape->size(), 2) - 2);
 }
 
 TEST_P(FileTapeTest, ConsecutiveRead) {
@@ -176,7 +176,13 @@ INSTANTIATE_TEST_SUITE_P(
   TapeTestFiles, 
   FileTapeTest,
   testing::Combine(
-    testing::Values("./data/10000_random.txt", "./data/10000_random_normalized.txt"),
+    testing::Values("./data/10000_random.txt", "./data/10000_random_normalized.txt"), 
     testing::Bool()
   )
+);
+
+INSTANTIATE_TEST_SUITE_P(
+  EmptyTapeTestFile, 
+  FileTapeTest, 
+  testing::Values(std::make_tuple("./data/empty.txt", false))
 );

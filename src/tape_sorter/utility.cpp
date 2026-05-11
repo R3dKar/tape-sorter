@@ -21,6 +21,6 @@ namespace tape_sorter::utility {
       if (unit == "h") return chrono::duration_cast<chrono::nanoseconds>(chrono::duration<double, std::ratio<3600>>(value));
     }
 
-    throw std::runtime_error("Invalid duration format: " + str);
+    throw std::invalid_argument("Invalid duration format: " + str);
   }
 } // namespace tape_sorter::utility
