@@ -64,12 +64,12 @@ namespace tape_sorter {
         symbol = m_file.peek();
       }
 
-      while (!std::isspace(symbol)) {
+      while (!std::isspace(symbol) && m_file.tellg() > 0) {
         m_file.seekg(-1, std::ios::cur);
         symbol = m_file.peek();
       }
 
-      m_file.seekg(1, std::ios::cur);
+      if (m_file.tellg() > 0) m_file.seekg(1, std::ios::cur);
     }
 
     std::this_thread::sleep_for(m_config.shift_latency);
@@ -82,7 +82,7 @@ namespace tape_sorter {
     if (m_file_normalized) {
       m_file.seekg((size() - 1) * LINE_WIDTH, std::ios::beg);
     } else {
-      m_file.seekg(0, std::ios::end);
+      m_file.seekg(-1, std::ios::end);
 
       char symbol = m_file.peek();
 
