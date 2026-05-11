@@ -41,6 +41,10 @@ if (BUILD_TESTS)
   add_executable(${PROJECT_NAME}_test ${PROJECT_TEST_SOURCES})
   target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME}_core GTest::gtest GTest::gtest_main)
 
+  if (WIN32)
+    target_compile_definitions(${PROJECT_NAME}_test PRIVATE _CRT_SECURE_NO_WARNINGS)
+  endif()
+
   include(GoogleTest)
-  gtest_discover_tests(${PROJECT_NAME}_test)
+  gtest_discover_tests(${PROJECT_NAME}_test WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/tests)
 endif()
