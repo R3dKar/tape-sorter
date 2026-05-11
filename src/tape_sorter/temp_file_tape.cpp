@@ -1,9 +1,9 @@
 #include "tape_sorter/temp_file_tape.hpp"
-#include <cstdio>
+#include "tape_sorter/utility.hpp"
 
 namespace tape_sorter {
   TempFileTape::TempFileTape(size_t n, const FileTapeConfig& config)
-      : m_temp_path(std::tmpnam(nullptr)), m_file_tape(std::make_unique<FileTape>(n, m_temp_path, config)) {
+      : m_temp_path(utility::tempfile()), m_file_tape(std::make_unique<FileTape>(n, m_temp_path, config)) {
   }
 
   size_t TempFileTape::size() const {

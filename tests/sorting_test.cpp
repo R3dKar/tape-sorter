@@ -4,6 +4,7 @@
 #include <tape_sorter/file_tape.hpp>
 #include <tape_sorter/temp_file_tape.hpp>
 #include <tape_sorter/tim_sort.hpp>
+#include <tape_sorter/utility.hpp>
 #include <tuple>
 #include <vector>
 
@@ -38,7 +39,7 @@ protected:
       FAIL() << "Test file does not exists: " << test_file;
     }
 
-    temp_input_path = std::tmpnam(nullptr);
+    temp_input_path = utility::tempfile();
     fs::copy_file(test_file, temp_input_path);
 
     LoadData();

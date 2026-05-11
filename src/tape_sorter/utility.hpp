@@ -63,4 +63,6 @@ namespace tape_sorter::utility {
   }
 
   std::chrono::nanoseconds parse_duration(const std::string& str);
+  std::string random_string(size_t length);
+  std::filesystem::path tempfile();
 } // namespace tape_sorter::utility

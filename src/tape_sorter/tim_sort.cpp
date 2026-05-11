@@ -3,7 +3,6 @@
 #include "tape_sorter/temp_file_tape.hpp"
 #include "tape_sorter/utility.hpp"
 #include <algorithm>
-#include <cstdio>
 #include <filesystem>
 #include <stdexcept>
 #include <vector>

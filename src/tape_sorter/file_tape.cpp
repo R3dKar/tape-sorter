@@ -165,7 +165,7 @@ namespace tape_sorter {
 
     if (m_file_normalized) return;
 
-    fs::path temp_file_path = std::tmpnam(nullptr);
+    fs::path temp_file_path = utility::tempfile();
     std::fstream temp_file(temp_file_path, std::ios::in | std::ios::out | std::ios::trunc);
 
     m_file.seekg(0, std::ios::beg);

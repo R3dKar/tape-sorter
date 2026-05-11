@@ -1,4 +1,5 @@
 #include "tape_sorter/utility.hpp"
+#include <random>
 #include <regex>
 #include <stdexcept>
 
@@ -22,5 +23,31 @@ namespace tape_sorter::utility {
     }
 
     throw std::invalid_argument("Invalid duration format: " + str);
+  }
+
+  std::string random_string(size_t length) {
+    static constexpr char charset[] = "abcdefghijklmnopqrstuvwxyz";
+    static std::mt19937 rng(std::random_device{}());
+    static std::uniform_int_distribution<size_t> index(0, sizeof(charset) - 2);
+
+    std::string result;
+    result.reserve(length);
+
+    for (size_t i = 0; i < length; i++) {
+      result += charset[index(rng)];
+    }
+
+    return result;
+  }
+
+  std::filesystem::path tempfile() {
+    namespace fs = std::filesystem;
+
+    fs::path result = fs::temp_directory_path() / (random_string(20) + ".tmp");
+    while (fs::exists(result)) {
+      result = fs::temp_directory_path() / (random_string(20) + ".tmp");
+    }
+
+    return result;
   }
 } // namespace tape_sorter::utility

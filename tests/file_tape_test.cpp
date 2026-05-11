@@ -1,9 +1,9 @@
-#include <cstdio>
 #include <filesystem>
 #include <fstream>
 #include <gtest/gtest.h>
 #include <memory>
 #include <tape_sorter/file_tape.hpp>
+#include <tape_sorter/utility.hpp>
 #include <tuple>
 #include <vector>
 
@@ -35,7 +35,7 @@ protected:
       FAIL() << "Test file does not exists: " << test_file;
     }
 
-    temp_copy_path = std::tmpnam(nullptr);
+    temp_copy_path = utility::tempfile();
     fs::copy_file(test_file, temp_copy_path);
 
     LoadData();
