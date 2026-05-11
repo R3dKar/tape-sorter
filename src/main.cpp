@@ -75,8 +75,8 @@ int main(int argc, char** argv) {
 
   // Config
   toml::table toml_config;
-  FileTape::Config tape_config{};
-  TimSortAlgorithm::Config sort_config{};
+  FileTapeConfig tape_config{};
+  TimSortConfig sort_config{};
 
   try {
     toml_config = toml::parse_file(config_path.string());

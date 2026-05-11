@@ -6,18 +6,18 @@
 #include <cstdint>
 
 namespace tape_sorter {
+  struct TimSortConfig {
+    size_t max_ram_elements = 1;
+  };
+
   class TimSortAlgorithm : public ISortingAlgorithm<uint32_t> {
     public:
-      struct Config {
-        size_t max_ram_elements = 1;
-      };
-      
-      TimSortAlgorithm(const Config& config = Config{}, const FileTape::Config& tape_config = FileTape::Config{});
+      TimSortAlgorithm(const TimSortConfig& config = TimSortConfig{}, const FileTapeConfig& tape_config = FileTapeConfig{});
       
       void sort(const ITape<uint32_t>& input, ITape<uint32_t>& output) const override;
     
     private:
-      Config m_config;
-      FileTape::Config m_tape_config;
+      TimSortConfig m_config;
+      FileTapeConfig m_tape_config;
   };
 }

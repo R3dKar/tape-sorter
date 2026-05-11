@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace tape_sorter {
-  TimSortAlgorithm::TimSortAlgorithm(const Config& config, const FileTape::Config& tape_config) : m_config(config), m_tape_config(tape_config) {
+  TimSortAlgorithm::TimSortAlgorithm(const TimSortConfig& config, const FileTapeConfig& tape_config) : m_config(config), m_tape_config(tape_config) {
     if (m_config.max_ram_elements == 0) {
       throw std::invalid_argument("Ram elements must be at least 1");
     }

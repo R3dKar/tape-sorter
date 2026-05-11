@@ -9,7 +9,7 @@
 namespace tape_sorter {
   class TempFileTape : public ITape<uint32_t> {
   public:
-    TempFileTape(size_t n, const FileTape::Config& config = FileTape::Config{});
+    TempFileTape(size_t n, const FileTapeConfig& config = FileTapeConfig{});
 
     size_t size() const override;
     size_t pos() const override;

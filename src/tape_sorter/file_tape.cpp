@@ -5,7 +5,7 @@
 #include <thread>
 
 namespace tape_sorter {
-  FileTape::FileTape(const std::filesystem::path& filename, const Config& config)
+  FileTape::FileTape(const std::filesystem::path& filename, const FileTapeConfig& config)
       : m_size(utility::count_file_items<uint32_t>(filename)), m_config(config), m_pos(0), m_file_normalized(false),
         m_file(filename, std::ios::in | std::ios::out | std::ios::binary), m_filename(filename) {
     char symbol;
@@ -13,7 +13,7 @@ namespace tape_sorter {
     m_file.seekg(-1, std::ios::cur);
   }
 
-  FileTape::FileTape(size_t n, const std::filesystem::path& filename, const Config& config)
+  FileTape::FileTape(size_t n, const std::filesystem::path& filename, const FileTapeConfig& config)
       : m_size(n), m_config(config), m_pos(0), m_file_normalized(true),
         m_file(filename, std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary), m_filename(filename) {
     for (size_t i = 0; i < m_size; i++) {

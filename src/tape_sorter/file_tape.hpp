@@ -8,17 +8,17 @@
 #include <limits>
 
 namespace tape_sorter {
+  struct FileTapeConfig {
+    std::chrono::nanoseconds shift_latency{};
+    std::chrono::nanoseconds rewind_latency{};
+    std::chrono::nanoseconds read_latency{};
+    std::chrono::nanoseconds write_latency{};
+  };
+
   class FileTape : public ITape<uint32_t> {
   public:
-    struct Config {
-      std::chrono::nanoseconds shift_latency{};
-      std::chrono::nanoseconds rewind_latency{};
-      std::chrono::nanoseconds read_latency{};
-      std::chrono::nanoseconds write_latency{};
-    };
-
-    FileTape(const std::filesystem::path& filename, const Config& config = Config{});
-    FileTape(size_t n, const std::filesystem::path& filename, const Config& config = Config{});
+    FileTape(const std::filesystem::path& filename, const FileTapeConfig& config = FileTapeConfig{});
+    FileTape(size_t n, const std::filesystem::path& filename, const FileTapeConfig& config = FileTapeConfig{});
 
     size_t size() const override;
     size_t pos() const override;
@@ -38,7 +38,7 @@ namespace tape_sorter {
 
     void normalize_file();
 
-    Config m_config;
+    FileTapeConfig m_config;
 
     const size_t m_size;
     mutable size_t m_pos;
